@@ -6,26 +6,23 @@ It requires three primary inputs:
 1. **Knowledge Base (KB)** – provided as a Turtle file  
 2. **Policy** – provided as a Turtle file  
 3. **Time instant `t`** – expressed using the W3C XML Schema Definition Language (XSD)
+   
 It returns a compliance report detailing the state of each obligation and the overall compliance status.  
----
+
 ## System Components  
 
 The Obligation Manager is composed of **five core components**:  
 
 - **Knowledge Base Manager**  
   - Loads the KB from a Turtle file into **Jena TDB2**.  
-
 - **Rule Manager**  
   - Loads and maintains rules in memory as Java objects.  
   - Evaluates rules against the KB.  
   - Augments rules with optional temporal bindings.  
-
 - **Obligation State Manager**  
   - Performs reasoning over the states of obligations.  
-
 - **Compliance Checker**  
   - Assesses the compliance of the KB with respect to obligations.  
-
 - **Report Generator**  
   - Produces a compliance report.  
 
