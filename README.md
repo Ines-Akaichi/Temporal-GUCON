@@ -1,14 +1,13 @@
-# The GUCON Obligation Manager  
+# The GUCON Obligation Manager 
 
 The **GUCON Obligation Manager** (see Figure 1) is implemented in Java using **Apache Jena**.  
 It requires three primary inputs:  
 
 1. **Knowledge Base (KB)** – provided as a Turtle file  
 2. **Policy** – provided as a Turtle file  
-3. **Time instant `t`** – expressed using the W3C XML Schema Definition Language (XSD)  
-
+3. **Time instant `t`** – expressed using the W3C XML Schema Definition Language (XSD)
+It returns a compliance report detailing the state of each obligation and the overall compliance status.  
 ---
-
 ## System Components  
 
 The Obligation Manager is composed of **five core components**:  
@@ -28,45 +27,33 @@ The Obligation Manager is composed of **five core components**:
   - Assesses the compliance of the KB with respect to obligations.  
 
 - **Report Generator**  
-  - Produces a compliance report detailing the state of each obligation and the overall compliance status.  
+  - Produces a compliance report.  
 
----
-
-![The GUCON Obligation Manager](https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/obligation-diagram-component.png)  
-**Figure 1. The GUCON Obligation Manager**
-
----
+![the gucon obligation manager](https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/obligation-diagram-component.png) 
+**Figure 1**.The GUCON Obligation Manager 
 
 ## Running the GUCON Obligation Manager  
 
 1. Download the JAR file from Figshare:  
-   [The GUCON Obligation Manager JAR](https://figshare.com/articles/software/The_GUCON_Obligation_Manager/29941160?file=57285929)  
-
+[The GUCON Obligation Manager JAR](https://figshare.com/articles/software/The_GUCON_Obligation_Manager/29941160?file=57285929)  
 2. Ensure that **Java 17** is installed (`java.runtime.version=17.0.6+10`).  
-
-3. Run the prototype with:  
-
+3. Run the prototype with:
+   
 ```bash
-java -jar [jarpath] [kb path] [rule path] [dateTime]
+java -jar [jarpath] [kb path] [rule path] [dateTime] ```
 
+# Evaluate the Performance & Scalability of the GUCON Obligation Manager 
 
-# Evaluate the Performance & Scalability of the GUCON Obligation Manager
+To evaluate our prototype, we use the EMRBots dataset (100-patients) [https://figshare.com/articles/dataset/A_100-patient_database/7040039?file=12941135] with 100 patients. The dataset is converted to an RDF graph using RMLMapper and mapping rules. The input graph is then fed to our generator (Figure 2). 
+![the data generation pipeline]( https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/data-generation-pipeline.png) 
+**Figure 1**. The Data Generation Pipeline. 
 
- To evaluate our prototype, we use the EMRBots dataset (100-patients) [https://figshare.com/articles/dataset/A_100-patient_database/7040039?file=12941135]  with 100 patients. The dataset is converted to an RDF graph using RMLMapper and mapping rules.
- The input graph is then fed to our generator (Figure 2). 
- 
-![the data generation pipeline]( https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/data-generation-pipeline.png)
-**Figure 2**. The Data Generation Pipeline.
+To run the generator, download the jar file from (figshare generator) [https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. Run the prototpye using the following java command: 
+java -jar [jarpath] [configPath.yaml] 
+The config path expects the scale for the rules, the kb, and the relevant input time, among other things (figshare config)[https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226].
 
-To run the generator, download the jar file from (figshare generator) [https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. 
-Run the prototpye using the following java command:
+We developed a test harness that works with our generated data and is found here (figshare test) [https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. To run the test harness, download the jar file and run the prototpye using the following java command: 
+java -jar [jarpath] [kb path] [rule path] [iteartion number]
 
-`java -jar  [jarpath]  [configPath.yaml] `
-
-The config path expects the scale for the rules, the kb, and the relevant input time, among other things (figshare config)[https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. A link to the data we used for evaluation in our paper can be found here  (figshare data)[https://figshare.com/articles/dataset/RDF_Data_For_the_EMRBots_Dataset/29941235].
-
-We developed a test harness that works with our generated data and is found here (figshare test) [https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. To run the test harness, download the jar file  and run the prototpye using the following java command:
-
-`java -jar  [jarpath]  [kb path] [rule path] [iteartion number]`
-
+A link to the data we used for evaluation in our paper can be found here (figshare data)[https://figshare.com/articles/dataset/RDF_Data_For_the_EMRBots_Dataset/29941235].
 The scripts used for evalaution are found here (scripts) [https://github.com/Ines-Akaichi/Temporal-GUCON/tree/main/scripts].
