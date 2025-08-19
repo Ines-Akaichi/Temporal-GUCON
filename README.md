@@ -1,17 +1,54 @@
-# The GUCON Obligation Manager 
-The GUCON Obligation Manager (Figure 1) is implemented in Java using Apache Jena. The manager expects three primary inputs: a KB and a policy, both provided as Turtle files, and a time instant t, expressed using the W3C XML Schema Definition Language (XSD).
-The Obligation Manager comprises five core components: the *Knowledge Base Manager*, the *Rule Manager*, the *Obligation State Manager*, the *Compliance Checker*, and the *Report Generator*. The Knowledge Base Manager loads the KB from a Turtle file into Jena TDB2. The Rule Manager loads and maintains the rules in memory as Java objects, enabling their evaluation against the KB. Additionally, it is responsible for augmenting the rules with optional temporal bindings. 
-The Obligation State Manager is responsible for reasoning over the states of obligations, while the Compliance Checker assesses the compliance of the KB. The Report Generator produces a compliance report detailing the state of each obligation and the overall compliance status.
+# The GUCON Obligation Manager  
 
-![the gucon obligation manager](https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/obligation-diagram-component.png)
-                  **Figure 1**. The GUCON Obligation Manager
-                  
-# How to run the GUCON Obligation Manager ?
-To run the obligation manaher, download the jar file from (figshare) [https://figshare.com/articles/software/The_GUCON_Obligation_Manager/29941160?file=57285929]. You should have Java installed
-The prototpye is implemented using java.runtime.version=17.0.6+10. 
-Run the prototpye using the following java command:
+The **GUCON Obligation Manager** (see Figure 1) is implemented in Java using **Apache Jena**.  
+It requires three primary inputs:  
 
-`java -jar  [jarpath]  [kb path]  [rule path] [dateTime]`  
+1. **Knowledge Base (KB)** – provided as a Turtle file  
+2. **Policy** – provided as a Turtle file  
+3. **Time instant `t`** – expressed using the W3C XML Schema Definition Language (XSD)  
+
+---
+
+## System Components  
+
+The Obligation Manager is composed of **five core components**:  
+
+- **Knowledge Base Manager**  
+  - Loads the KB from a Turtle file into **Jena TDB2**.  
+
+- **Rule Manager**  
+  - Loads and maintains rules in memory as Java objects.  
+  - Evaluates rules against the KB.  
+  - Augments rules with optional temporal bindings.  
+
+- **Obligation State Manager**  
+  - Performs reasoning over the states of obligations.  
+
+- **Compliance Checker**  
+  - Assesses the compliance of the KB with respect to obligations.  
+
+- **Report Generator**  
+  - Produces a compliance report detailing the state of each obligation and the overall compliance status.  
+
+---
+
+![The GUCON Obligation Manager](https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/obligation-diagram-component.png)  
+**Figure 1. The GUCON Obligation Manager**
+
+---
+
+## Running the GUCON Obligation Manager  
+
+1. Download the JAR file from Figshare:  
+   [The GUCON Obligation Manager JAR](https://figshare.com/articles/software/The_GUCON_Obligation_Manager/29941160?file=57285929)  
+
+2. Ensure that **Java 17** is installed (`java.runtime.version=17.0.6+10`).  
+
+3. Run the prototype with:  
+
+```bash
+java -jar [jarpath] [kb path] [rule path] [dateTime]
+
 
 # Evaluate the Performance & Scalability of the GUCON Obligation Manager
 
@@ -19,7 +56,7 @@ Run the prototpye using the following java command:
  The input graph is then fed to our generator (Figure 2). 
  
 ![the data generation pipeline]( https://github.com/Ines-Akaichi/Temporal-GUCON/blob/main/data-generation-pipeline.png)
-                  **Figure 1**. The Data Generation Pipeline.
+**Figure 2**. The Data Generation Pipeline.
 
 To run the generator, download the jar file from (figshare generator) [https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226]. 
 Run the prototpye using the following java command:
