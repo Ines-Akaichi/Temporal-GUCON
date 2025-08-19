@@ -1,0 +1,101 @@
+@prefix gc: <http://www.wu.ac.at/2025/gucon-compliance#> .
+@prefix gucon: <http://www.wu.ac.at/2024/gucon#> .
+@prefix ucp: <http://www.wu.ac.at/2024/ucp#> .
+@prefix dct: <//www.w3.org/ns/dcat#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix hc:    <http://wu.ac.at/domain/hospital-inpatient-care#> .
+
+
+############################################
+# Ontology header
+############################################
+
+<http://wu.ac.at/domain/hospital-inpatient-care>
+  a owl:Ontology ;
+  rdfs:label "The Hospital Inpatient Care Ontology (draft)"@en ;
+  dct:creator ex:ines-akaichi ;
+  dct:description "An OWL ontology capturing a the hospital inpatient care process."@en .
+
+
+#################################################################
+# Classes
+#################################################################
+
+hc:Patient a owl:Class ;
+    rdfs:label  "Patient"@en .
+
+hc:Doctor a owl:Class ;
+      rdfs:label  "Doctor"@en .
+
+hc:TreatmentPlan a owl:Class ;
+    rdfs:label  "Treatment Plan"@en .
+
+hc:DischargeForm a owl:Class ;
+    rdfs:label  "Discharge Form"@en .
+
+hc:DiagnosisReport a owl:Class ;
+    rdfs:label  "Diagnosis Report"@en .
+
+hc:LabTest a owl:Class ;
+    rdfs:label  "Lab Test"@en .
+
+hc:LabResult a owl:Class ;
+    rdfs:label  "Lab Result"@en .
+
+hc:Admission a owl:Class ;
+    rdfs:label  "Admission"@en .
+
+
+#################################################################
+# Object Properties
+#################################################################
+
+hc:hasResponsibleDoctor a owl:ObjectProperty ;
+    rdfs:domain hc:Patient ;
+    rdfs:range hc:Doctor .
+
+hc:hasPatient a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ;
+                  owl:unionOf ( hc:Admission hc:LabTest ) ] ;
+    rdfs:range hc:Patient .
+
+hc:isAssignedToPatient a owl:ObjectProperty ;
+    rdfs:domain hc:TreatementPlan ;
+    rdfs:range hc:Patient .  
+
+hc:hasLabResult a owl:ObjectProperty ;
+    rdfs:domain hc:LabTest ;
+    rdfs:range hc:LabResult .
+
+hc:isBasedOnLabResult a owl:ObjectProperty ;
+    rdfs:domain hc:TreatmentPlan ;
+    rdfs:range hc:LabResult .
+
+hc:hasAdmission a owl:ObjectProperty ;
+    rdfs:domain [ a owl:Class ;
+                  owl:unionOf ( hc:DiagnosisReport  hc:LabTest ) ] ;
+    rdfs:range hc:Admission .
+
+hc:hasDischargeForm a owl:ObjectProperty ;
+    rdfs:domain hc:Admission ;
+    rdfs:range hc:DischargeForm .
+
+
+#################################################################
+# Instantiation
+#################################################################
+
+hc:Patient rdfs:subClassOf gucon:Entity .
+hc:Doctor rdfs:subClassOf gucon:Entity .
+
+hc:TreatmentPlan rdfs:subClassOf gucon:Resource .
+hc:DischargeForm rdfs:subClassOf gucon:Resource  .
+hc:DiagnosisReport rdfs:subClassOf gucon:Resource .
+
+gucon:share rdf:type gucon:Action .
+gucon:sign  rdf:type gucon:Action .
+gucon:approve rdf:type gucon:Action .
+gucon:delete  rdf:type gucon:Action .

@@ -1,0 +1,218 @@
+@prefix : <http://www.wu.ac.at/2025/gucon-compliance#> .
+@prefix gc: <http://www.wu.ac.at/2025/gucon-compliance#> .
+@prefix gucon: <http://www.wu.ac.at/2024/gucon#> .
+@prefix ucp: <http://www.wu.ac.at/2024/ucp#> .
+@prefix dct: <//www.w3.org/ns/dcat#> .
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix owl: <http://www.w3.org/2002/07/owl#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+############################################
+# Ontology header
+############################################
+
+<http://www.wu.ac.at/2025/gucon-compliance>
+  a owl:Ontology ;
+  rdfs:label "GUCON Compliance Ontology"@en ;
+  dct:creator ex:ines-akaichi ;
+  dct:description "An OWL ontology capturing a compliance report including obligation states and compliance status."@en .
+
+############################################
+# Core Classes
+############################################
+
+# Report
+
+gc:Report a owl:Class ;
+  rdfs:label "Report"@en .
+
+# Knowledge base & Policy rules
+
+gc:KnowledgeBase a owl:Class ;
+  rdfs:label "Knowledge Base"@en .
+
+ucp:Policy a owl:Class ;
+  rdfs:label "Policy"@en .
+
+ucp:ObligationRule a owl:Class ;
+  rdfs:label "Obligation Rule"@en .
+
+gc:MappedObligationRule a owl:Class ;
+  rdfs:label "Mapped Obligation Rule"@en .
+
+
+# Actions & Elements
+
+gucon:ExtendedAction a owl:Class ;
+  rdfs:label "Extended Action"@en ;
+  rdfs:comment "Action bound to entity, resource and temporal attributes (start, deadline, optionally execution)."@en .
+
+gucon:Action a owl:Class ;
+  rdfs:label "Action"@en .
+
+gucon:Event a owl:Class ;
+  rdfs:subClassOf gucon:ExtendedAction ;
+  rdfs:label "Event"@en  .
+
+gucon:Entity a owl:Class ;
+  rdfs:label "Entity"@en .
+
+gucon:Resource a owl:Class ;
+  rdfs:label "Resource"@en .
+
+
+# Compliance & Obligation states
+
+gc:ObligationState a owl:Class ;
+  rdfs:label "Obligation State"@en .
+
+gc:Active a owl:Class ; rdfs:subClassOf gc:ObligationState ; rdfs:label "Active"@en .
+
+gc:Fulfilled a owl:Class ; rdfs:subClassOf gc:ObligationState ; rdfs:label "Fulfilled"@en .
+
+gc:Violated a owl:Class ; rdfs:subClassOf gc:ObligationState ; rdfs:label "Violated"@en .
+
+gc:Expired a owl:Class ; rdfs:subClassOf gc:ObligationState ; rdfs:label "Expired"@en .
+
+gc:NotSatisfied a owl:Class ; rdfs:subClassOf gc:ObligationState ; rdfs:label "Not Satisfied"@en .
+
+
+gc:ComplianceStatus a owl:Class ;
+  rdfs:label "Compliance Status"@en .
+
+gc:Compliant a owl:Class ;
+  rdfs:subClassOf gc:ComplianceStatus ;
+  rdfs:label "Compliant"@en .
+
+gc:NonCompliant a owl:Class ;
+  rdfs:subClassOf gc:ComplianceStatus ;
+  rdfs:label "Non-Compliant"@en .
+
+
+
+
+############################################
+# Object Properties
+############################################
+
+# Knowledge Base as Domain
+
+gc:hasComplianceStatus a owl:ObjectProperty ;
+  rdfs:domain gc:KnowledgeBase ;
+  rdfs:range gc:ComplianceStatus ;
+  rdfs:label "has compliance status"@en .
+
+
+# Report as Domain 
+
+gc:isGeneratedFrom a owl:ObjectProperty ;
+  rdfs:domain gc:Report ; rdfs:range gc:KnowledgeBase ;
+  rdfs:label "is generated from"@en .
+
+gc:isGeneratedFor a owl:ObjectProperty ;
+  rdfs:domain gc:Report ; rdfs:range ucp:Policy ;
+  rdfs:label "is generated for"@en .
+
+gc:includes a owl:ObjectProperty ;
+  rdfs:domain gc:Report ; rdfs:range gc:MappedObligationRule ;
+  rdfs:label "includes"@en .
+
+# Mapped Obligation as Domain
+
+gc:isDerivedFrom a owl:ObjectProperty ;
+  rdfs:domain gc:MappedObligationRule ; rdfs:range ucp:ObligationRule ;
+  rdfs:label "is derived from"@en .
+
+gc:hasExtendedAction a owl:ObjectProperty ;
+  rdfs:domain gc:MappedObligationRule ; rdfs:range gucon:ExtendedAction ;
+  rdfs:label "has extended action"@en .
+
+gc:hasObligationState a owl:ObjectProperty ;
+  rdfs:domain gc:MappedObligationRule ; rdfs:range gc:ObligationState ;
+  rdfs:label "has obligation state"@en .
+
+
+# Obligation Rule as Domain
+
+ucp:isPartOf a owl:ObjectProperty ;
+  rdfs:domain ucp:ObligationRule ; rdfs:range  ucp:Policy ;
+  rdfs:label "is part of"@en .
+
+# Extended Action  as Domain
+
+gucon:action a owl:ObjectProperty ;
+  rdfs:domain gucon:ExtendedAction ; rdfs:range gucon:Action ;
+  rdfs:label "action type"@en .
+
+gucon:entity a owl:ObjectProperty ;
+  rdfs:domain gucon:ExtendedAction ; rdfs:range gucon:Entity ;
+  rdfs:label "entity"@en .
+
+gucon:resource a owl:ObjectProperty ;
+  rdfs:domain gucon:ExtendedAction ; rdfs:range gucon:Resource ;
+  rdfs:label "resource"@en .
+
+
+
+############################################
+# Datatype Properties
+############################################
+
+# Report timestamps
+gc:hasReportTime a owl:DatatypeProperty ;
+  rdfs:domain gc:Report ; rdfs:range xsd:dateTime ;
+  rdfs:label "has report time"@en .
+
+gc:hasEvaluationTime a owl:DatatypeProperty ;
+  rdfs:domain gc:Report ; rdfs:range xsd:dateTime ;
+  rdfs:label "has evaluation time"@en .
+
+# Temporal attributes on extended actions
+
+gucon:startTime a owl:DatatypeProperty ;
+  rdfs:domain gucon:ExtendedAction ; rdfs:range xsd:dateTime ;
+  rdfs:label "start time"@en .
+
+gucon:deadline a owl:DatatypeProperty ;
+  rdfs:domain gucon:ExtendedAction ; rdfs:range xsd:dateTime ;
+  rdfs:label "deadline"@en .
+
+# Execution time on an event 
+
+gucon:executionTime a owl:DatatypeProperty ;
+  rdfs:domain gucon:Event ; rdfs:range xsd:dateTime ;
+  rdfs:label "execution time"@en .
+
+# Descriptive metadata for Policies using DCAT terms
+# We reuse dct:creator, dct:modified, dct:title, dct:description
+# and adapt their domains/ranges to the Policy class.
+
+dct:creator rdfs:domain ucp:Policy ; rdfs:range rdf:Resource .
+
+dct:modified rdfs:domain ucp:Policy ; rdfs:range xsd:dateTime .
+
+dct:title rdfs:domain ucp:Policy ; rdfs:range xsd:string .
+
+dct:description rdfs:domain ucp:Policy ; rdfs:range xsd:string .
+
+# Obligation rule patterns
+ucp:hasConditionPattern a owl:DatatypeProperty ;
+  rdfs:domain ucp:ObligationRule ; rdfs:range xsd:string ;
+  rdfs:label "has condition pattern"@en .
+
+ucp:hasActionPattern a owl:DatatypeProperty ;
+  rdfs:domain ucp:ObligationRule ; rdfs:range xsd:string ;
+  rdfs:label "has action pattern"@en .
+
+ucp:hasDeonticOperator a owl:ObjectProperty ;
+  rdfs:domain ucp:ObligationRule ; rdfs:range rdf:Resource ;
+  rdfs:label "has deontic operator"@en .
+
+
+
+
+gucon:approve rdf:type gucon:Action .
+gucon:delete  rdf:type gucon:Action .
+gucon:share rdf:type gucon:Action .
+gucon:sign  rdf:type gucon:Action .
