@@ -34,7 +34,7 @@ The Obligation Manager is composed of **five core components**:
 
 1. Download the JAR file from Figshare: [the GUCON obligation manager JAR](https://figshare.com/articles/software/The_GUCON_Obligation_Manager/29941160?file=57285929)  
 2. Ensure that **Java 17** is installed (`java.runtime.version=17.0.6+10`).  
-3. Run the prototype with: `java -jar [jarpath] [kb path] [rule path] [dateTime]`
+3. Run the prototype with: `java -jar [jarPath] [kbPath] [rulePath] [dateTime]`
 
 ## Evaluate the Performance & Scalability of the GUCON Obligation Manager 
 
@@ -46,7 +46,7 @@ To evaluate our prototype, we use the EMRBots dataset (100-patients) [https://fi
 
 ### Running the Data Generator   
 1.  Download the jar file from Figshare: [generator JAR](https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226).
-2.  Run the prototpye with: `java -jar [jarpath] [configPath.yaml]`
+2.  Run the prototpye with: `java -jar [jarPath] [configPath.yaml]`
 
 The config path specifies the scale for the rules, the kb, and the relevant input time, among other things [figshare config](https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226).
 
@@ -55,6 +55,6 @@ A link to the data we used for evaluation in our paper can be found here: [data]
 We developed a test harness that works with our generated data. To run the test harness:
 
 1. Download the jar file [testHarness JAR](https://figshare.com/articles/software/Evaluation_of_the_GUCON_Obligation_Manager/29941226)
-2.  run the prototpye using the following java command:  `java -jar [jarpath] [kb path] [rule path] [iteartion number]`
+2.  run the prototpye using the following java command:  `java -jar [jarPath] [kbPath] [rulePath] [iteartionNumber]`
 
 The scripts used for evaluation can be found here [scripts](https://github.com/Ines-Akaichi/Temporal-GUCON/tree/main/scripts).
