@@ -39,7 +39,8 @@ The Obligation Manager is composed of **five core components**:
 2. Ensure that **Java 17** is installed (`java.runtime.version=17.0.6+10`).  
 3. Run the prototype with:
    
-```bash java -jar [jarpath] [kb path] [rule path] [dateTime]
+```bash
+java -jar [jarpath] [kb path] [rule path] [dateTime]
 
 # Evaluate the Performance & Scalability of the GUCON Obligation Manager 
 
