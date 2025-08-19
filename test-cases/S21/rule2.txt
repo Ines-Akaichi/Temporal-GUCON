@@ -1,0 +1,10 @@
+  {
+  ?patient a hc:Patient .
+  ?dischargeForm a hc:DischargeForm .
+  ?admission a hc:Admission .
+  ?admission hc:hasPatient  ?patient .
+  ?admission hc:hasDischargeForm ?dischargeForm .
+  ?admission  hc:hasExpectedAdmissionEndDate  ?expectedAdmissionEndDate .
+  BIND (?expectedAdmissionEndDate AS ?deadline) .
+  }
+  --> O {<<?patient gucon:sign  ?dischargeForm>> gucon:deadline ?deadline }

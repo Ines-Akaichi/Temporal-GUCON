@@ -1,0 +1,15 @@
+@prefix ex: <http://example.org/> .
+@prefix hc: <http://wu.ac.at/domain/hospital-inpatient-care#>
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Patient
+ex:patient/alice-waltz a hc:Patient .
+
+# Admission
+ex:admission/adm789 a hc:Admission ;
+    hc:hasPatient ex:patient/alice-waltz ;
+    hc:hasDischargeForm ex:dischargeForm/form321 ;
+    hc:hasExpectedAdmissionEndDate "2025-08-15T17:00:00Z"^^xsd:dateTime .
+
+# Discharge Form
+ex:dischargeForm/form321 a hc:DischargeForm .

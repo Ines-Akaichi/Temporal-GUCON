@@ -1,0 +1,13 @@
+  {
+  ?doctor a  hc:Doctor .
+  ?treatmentPlan a  hc:TreatmentPlan .
+  ?patient  a  hc:Patient .
+  ?patient hc:hasResponsibleDoctor ?doctor .
+  ?labTest  a  hc:LabTest .
+  ?labTest   hc:hasPatient   ?patient .
+  ?labTest hc:hasLabResult  ?labResult .
+  ?treatmentPlan hc:isBasedOnLabResult   ?labResult .
+  ?labResult hc:hasLabResultDatetime ?labResultDateTime .
+  BIND (?labResultDateTime AS ?startTime) .
+  }
+  --> O { <<?doctor gucon:share   ?treatmentPlan>> gucon:startTime ?startTime}

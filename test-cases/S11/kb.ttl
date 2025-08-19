@@ -1,0 +1,23 @@
+@prefix ex: <http://example.org/> .
+@prefix hc: <http://wu.ac.at/domain/hic/>
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+
+# Doctor
+ex:doctor/angelika-smith a hc:Doctor .
+
+# Patient
+ex:patient/alice-waltz a hc:Patient ;
+    hc:hasResponsibleDoctor ex:doctor/angelika-smith .
+
+# Lab Test
+ex:labTest/lab123 a hc:LabTest ;
+    hc:hasPatient ex:patient/alice-waltz ;
+    hc:hasLabResult ex:labResult/result123 .
+
+# Lab Result
+ex:labResult/result123 a hc:LabResult ;
+    hc:hasLabResultDatetime "2025-08-10T09:30:00Z"^^xsd:dateTime .
+
+# Treatment Plan
+ex:treatmentPlan/plan456 a hc:TreatmentPlan ;
+    hc:isBasedOnLabResult ex:labResult/result123 .

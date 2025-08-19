@@ -1,0 +1,10 @@
+{?doctor a hc:Doctor .
+?diagnosisReport a hc:DiagnosisReport .
+?admission a hc:Admission .
+?admission hc:hasPatient ?patient .
+?admission hc:hasActualAdmissionEndDate ?actualAdmissionEndDate .
+?diagnosisReport hc:hasAdmission  ?admission .
+?patient hc:hasResponsibleDoctor ?doctor .
+BIND (?actualAdmissionEndDate AS ?startTime) .
+BIND(?startTime +"PT12H"^^xsd:duration AS ?deadline)}
+-> O { <<?doctor gucon:sign ?diagnosisReport >> gucon:startTime ?startTime; gucon:deadline ?deadline. }
