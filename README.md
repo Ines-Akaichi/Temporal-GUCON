@@ -1,6 +1,6 @@
 # The GUCON Obligation Manager 
 
-The **GUCON Obligation Manager** (see Figure 1) is implemented in Java using **Apache Jena**.  
+The **GUCON Obligation Manager** (see Figure 1) is implemented in Java using **Apache Jena 5.1.0**.  
 It requires three primary inputs:  
 
 1. **Knowledge Base (KB)** – provided as a Turtle file  
