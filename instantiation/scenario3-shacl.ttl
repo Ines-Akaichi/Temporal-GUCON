@@ -1,0 +1,34 @@
+PREFIX gucon: <http://www.wu.ac.at/2024/gucon#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ucp:   <<http://www.wu.ac.at/2024/ucp#>>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+PREFIX exp:    <http://example.com/gucon#>
+PREFIX ex:    <http://example.com/emr#>
+PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#> 
+
+exp:rule/obligation-sign-diagnosis-report 
+a sh:NodeShape ;
+sh:rule [
+  a sh:SPARQLRule, ucp:ObligationRule  ;
+  sh:prefixes ex: , gucon: , hc: ;
+    CONSTRUCT {
+          $this rdfs:subClassOf gucon:ExtendedAction. 
+          $this gucon:hasAction ?sign .
+          $this  gucon:hasEntity ?doctor.
+          $this gucon:hasResource ?diagnosisReport .
+          $this gucon:startTime ?startTime .
+          $this gucon:deadline ?deadline .
+          }
+    WHERE {
+          ?doctor a hc:Doctor .
+          ?diagnosisReport a hc:DiagnosisReport .
+          ?admission a hc:Admission .
+          ?admission hc:hasPatient ?patient .
+          ?admission hc:hasActualAdmissionEndDate 
+          ?actualAdmissionEndDate .
+          ?diagnosisReport hc:hasAdmission  ?admission .
+          ?patient hc:hasResponsibleDoctor ?doctor .
+          BIND (?actualAdmissionEndDate AS ?startTime) .
+          BIND(?startTime +"PT12H"^^xsd:duration AS ?deadline)       
+          } """ ; 
+          ] .
