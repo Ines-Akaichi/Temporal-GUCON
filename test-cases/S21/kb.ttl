@@ -1,16 +1,16 @@
-@prefix ex: <http://example.org/> .
-@prefix hc: <http://wu.ac.at/domain/hospital-inpatient-care#>
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+PREFIX ex:  <http://example.com/ns#> 
+PREFIX hc: <http://wu.ac.at/domain/hospital-inpatient-care#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
 # Patient
-ex:patient/alice-waltz a hc:Patient .
+ex:alice-waltz a hc:Patient .
 
 
 # Admission
-ex:admission/adm789 a hc:Admission ;
-    hc:hasPatient ex:patient/alice-waltz ;
-    hc:hasDischargeForm ex:dischargeForm/form321 ;
-    hc:hasExpectedAdmissionEndDate "2025-08-15T17:00:00Z"^^xsd:dateTime .
+ex:adm789 a hc:Admission ;
+    hc:hasPatient ex:alice-waltz ;
+    hc:hasDischargeForm ex:form321 ;
+    hc:hasExpectedAdmissionEndDate "2025-08-15T17:00:00.000+02:00"^^xsd:dateTime .
 
 # Discharge Form
-ex:dischargeForm/form321 a hc:DischargeForm .
+ex:form321 a hc:DischargeForm .

@@ -1,21 +1,21 @@
-@prefix ex: <http://example.org/> .
-@prefix hc: <http://wu.ac.at/domain/hospital-inpatient-care#>
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
-
+PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#>
+PREFIX ex:  <http://example.com/ns#>
+PREFIX gucon: <http://www.wu.ac.at/2024/gucon#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 
 # Doctor
-ex:doctor/angelika-smith a hc:Doctor .
+ex:angelika-smith a hc:Doctor .
 
 # Patient
- ex:patient/alice-waltz a hc:Patient ;
-    hc:hasResponsibleDoctor  ex:doctor/angelika-smith .
+ ex:alice-waltz a hc:Patient ;
+    hc:hasResponsibleDoctor  ex:angelika-smith .
 
 # Admission
-ex:admission/alice-waltz-2025-07-15 a hc:Admission ;
-    hc:hasActualAdmissionStartDate "2025-07-15T09:30:00+02:00"^^xsd:dateTime ;
-    hc:hasActualAdmissionEndDate "2025-07-20T10:30:00+02:00"^^xsd:dateTime;
-    hc:hasPatient ex:patient/alice-waltz .
+ex:alice-waltz-2025-07-15 a hc:Admission ;
+    hc:hasActualAdmissionStartDate "2025-07-15T09:30:00.000+02:00"^^xsd:dateTime ;
+    hc:hasActualAdmissionEndDate "2025-07-20T10:30:00.000+02:00"^^xsd:dateTime;
+    hc:hasPatient ex:alice-waltz .
 
 # Diagnosis Report
-ex:diagnosis-report/alice-waltz-2025-07-15  a hc:DiagnosisReport ;
-    hc:hasAdmission ex:admission/alice-waltz-2025-07-15 .
+ex:alice-waltz-2025-07-15  a hc:DiagnosisReport ;
+    hc:hasAdmission ex:alice-waltz-2025-07-15 .

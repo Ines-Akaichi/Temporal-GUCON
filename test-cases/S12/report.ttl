@@ -1,0 +1,30 @@
+PREFIX afn:   <http://jena.apache.org/ARQ/function#>
+PREFIX emr:   <http://wu.ac.at/domain/emr#>
+PREFIX ex:    <http://example.com/ns#>
+PREFIX gc:    <http://www.wu.ac.at/2025/gucon-compliance#>
+PREFIX gucon: <http://www.wu.ac.at/2024/gucon#>
+PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
+PREFIX ucp:   <http://www.wu.ac.at/2024/ucp#>
+PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
+
+<http://example.org/kb>
+        rdf:type                gc:KnowledgeBase;
+        gc:hasComplianceStatus  gc:COMPLIANT .
+
+<http://www.wu.ac.at/2025/gucon-compliance#report-2025-08-22T08:10:00.1880998+02:00>
+        rdf:type              gc:Report;
+        gc:hasEvaluationTime  "2025-08-10T10:30+02:00"^^xsd:dateTime;
+        gc:hasReportTime      "2025-08-22T08:10:00.1880998+02:00"^^xsd:dateTime;
+        gc:includes           ex:37_instance1;
+        gc:isGeneratedFrom    <http://example.org/kb> .
+
+ex:37_instance1  rdf:type      gc:MappedObligationRule;
+        gc:hasExtendedAction   [ rdf:type             gucon:ExtendedAction;
+                                 gucon:action         gucon:share;
+                                 gucon:entity         ex:angelika-smith;
+                                 gucon:executionTime  "2025-08-11T09:30+02:00"^^xsd:dateTime;
+                                 gucon:resource       ex:plan456;
+                                 gucon:startTime      "2025-08-10T09:30+02:00"^^xsd:dateTime
+                               ];
+        gc:hasObligationState  gc:ACTIVE , gc:FULFILLED;
+        gc:isDerivedFrom       ex:37 .

@@ -1,23 +1,24 @@
-@prefix ex: <http://example.org/> .
-@prefix hc: <http://wu.ac.at/domain/hic/>
-@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+PREFIX ex: <http://example.com/ns#>
+PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#>
+PREFIX xsd: <http://www.w3.org/2001/XMLSchema#> 
 
 # Doctor
-ex:doctor/angelika-smith a hc:Doctor .
+ex:angelika-smith a hc:Doctor .
 
 # Patient
-ex:patient/alice-waltz a hc:Patient ;
-    hc:hasResponsibleDoctor ex:doctor/angelika-smith .
+ex:alice-waltz a hc:Patient ;
+    hc:hasResponsibleDoctor ex:angelika-smith .
 
 # Lab Test
-ex:labTest/lab123 a hc:LabTest ;
-    hc:hasPatient ex:patient/alice-waltz ;
-    hc:hasLabResult ex:labResult/result123 .
+ex:lab123 a hc:LabTest ;
+    hc:hasPatient ex:alice-waltz ;
+    hc:hasLabResult ex:result123 .
 
 # Lab Result
-ex:labResult/result123 a hc:LabResult ;
-    hc:hasLabResultDatetime "2025-08-10T09:30:00Z"^^xsd:dateTime .
+ex:result123 a hc:LabResult ;
+    hc:hasLabResultDatetime "2025-08-10T09:30:00.000+02:00"^^xsd:dateTime .
 
 # Treatment Plan
-ex:treatmentPlan/plan456 a hc:TreatmentPlan ;
-    hc:isBasedOnLabResult ex:labResult/result123 .
+ex:plan456 a hc:TreatmentPlan ;
+    hc:isBasedOnLabResult ex:result123 .
+
