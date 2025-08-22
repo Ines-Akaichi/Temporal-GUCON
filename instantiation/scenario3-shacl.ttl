@@ -6,7 +6,7 @@ PREFIX exp:    <http://example.com/gucon#>
 PREFIX ex:    <http://example.com/emr#>
 PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#> 
 
-exp:rule/obligation-sign-diagnosis-report 
+exp:rule-obligation-sign-diagnosis-report 
 a sh:NodeShape ;
 sh:rule [
   a sh:SPARQLRule, ucp:ObligationRule  ;
