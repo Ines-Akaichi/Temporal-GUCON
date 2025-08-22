@@ -8,7 +8,7 @@ PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#> 
 
 
-exp:rule/obligation-sign-diagnosis-report
+exp:rule-obligation-sign-diagnosis-report
       rdf:type owl:Class ;
     rdfs:subClassOf ucp:ObligationRule ;
     owl:equivalentClass [
