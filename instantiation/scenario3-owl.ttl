@@ -1,11 +1,12 @@
 PREFIX gucon: <http://www.wu.ac.at/2024/gucon#>
 PREFIX rdf:   <http://www.w3.org/1999/02/22-rdf-syntax-ns#>
-PREFIX ucp:   <<http://www.wu.ac.at/2024/ucp#>>
+PREFIX ucp:   <http://www.wu.ac.at/2024/ucp#>
 PREFIX xsd:   <http://www.w3.org/2001/XMLSchema#>
 PREFIX exp:    <http://example.com/gucon#>
 PREFIX ex:    <http://example.com/emr#>
 PREFIX owl: <http://www.w3.org/2002/07/owl#>
 PREFIX hc:  <http://wu.ac.at/domain/hospital-inpatient-care#> 
+PREFIX rdfs:  <http://www.w3.org/1999/02/22-rdf-syntax-ns#> 
 
 
 exp:rule-obligation-sign-diagnosis-report
@@ -15,10 +16,26 @@ exp:rule-obligation-sign-diagnosis-report
         rdf:type owl:Class ;
         owl:intersectionOf (
             # Action restriction
+            [
+            owl:intersectionOf (
             [ rdf:type owl:Restriction ;
               owl:onProperty gucon:hasAction ;
               owl:hasValue gucon:sign
             ]
+            [
+              rdf:type  owl:Restriction;
+              owl:onProperty  gucon:startTime ;
+              owl:hasValue    "2025-08-14T09:00:00^^xsd:dateTime"
+            ]
+            [
+            rdf:type  owl:Restriction;
+              owl:onProperty  gucon:deadline ;
+              owl:hasValue    "2025-08-14T21:00:00^^xsd:dateTime"
+            ]
+
+            )
+            ]
+
             # Resource restriction
             [ rdf:type owl:Restriction ;
               owl:onProperty gucon:hasResource ;
@@ -30,10 +47,7 @@ exp:rule-obligation-sign-diagnosis-report
                     hc:hasResponsibleDoctor [
                       rdf:type hc:Doctor
                     ]
-                  ] ;
-                  # Hardcoded start and deadline
-                  gucon:startTime "2025-08-14T09:00:00"^^xsd:dateTime ;
-                  gucon:deadline  "2025-08-14T21:00:00"^^xsd:dateTime
+                  ] 
                 ]
               ]
             ]
