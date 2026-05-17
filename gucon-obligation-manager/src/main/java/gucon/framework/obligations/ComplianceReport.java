@@ -127,7 +127,7 @@ public class ComplianceReport {
 		        serializeObligation(model, rule, report);
 		    }
 
-		    //System.out.println("Model size: " + model.size());
+		    System.out.println("Model size: " + model.size());
 
 		    try (FileOutputStream out = new FileOutputStream(filePath)) {
 		        model.write(out, "TURTLE");

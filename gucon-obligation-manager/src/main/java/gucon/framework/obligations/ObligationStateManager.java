@@ -10,6 +10,7 @@ import java.util.Map;
 import org.apache.jena.graph.Node;
 import org.apache.jena.graph.NodeFactory;
 import org.apache.jena.graph.Triple;
+import org.apache.jena.query.ARQ;
 import org.apache.jena.query.Query;
 import org.apache.jena.query.QueryExecution;
 import org.apache.jena.query.QueryExecutionFactory;
@@ -69,7 +70,7 @@ public class ObligationStateManager {
 	public ObligationStateManager(KnowledgeBaseManager kbManager, String timeString) {
 		 this.kbManager = kbManager;	        
 	     this.time = OffsetDateTime.parse(timeString, DateTimeFormatter.ISO_OFFSET_DATE_TIME);
-		 this.snapshot= getSnapshot(); // don't create immediately
+		 //this.snapshot= getSnapshot(); // don't create immediately
 	 }
 		 
 
@@ -136,6 +137,9 @@ public class ObligationStateManager {
 	    List<EvaluatedRule> evaluatedRules = new ArrayList<>();
 
 	    for (Rule r : rules) {
+	        ARQ.getContext().clear(); // debug only
+	        snapshot = kbManager.generateSnapshot(time.toString()); // RESET HERE
+	        
 	        Query conditionQuery = r.getFullConditionQuery();
 	        Query actionQuery = r.getActionQuery();
 
@@ -169,7 +173,9 @@ public class ObligationStateManager {
 
 	            // ---- STATE EVALUATION STARTS HERE ----
 	            OffsetDateTime startTime = mappedAction.getStartTime();
+
 	            OffsetDateTime deadline = mappedAction.getDeadline();
+
 	            OffsetDateTime execDateTime = instRule.getAtTimeValue();
 
 	            OffsetDateTime validExecTime = null;
@@ -278,9 +284,9 @@ public class ObligationStateManager {
 	}
 	 
    public static void main(String[] args) throws Exception {
-    String ttlPath="C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/generatedData/kb/kb-for-all-rule.ttl";
-    String rulePath ="C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/generatedData/rules/rules-5.ttl";
-    String reportFilePath ="C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/generatedData/reports/report.ttl";
+    String ttlPath="C:/Users/Administrator/eclipse-workspace/test-cases/S34/kb.ttl";
+    String rulePath ="C:/Users/Administrator/eclipse-workspace/test-cases/S34/rule3.ttl";
+    String reportFilePath ="C:/Users/Administrator/eclipse-workspace/test-cases/S34/report.ttl";
 	
 	String graphdbDir = "C:/Users/iakaichi/OneDrive - WU Wien/Desktop/PhD/Papers/Paper WU & FORTH/Extension/WWW/Querying Approach/Test/GraphDB";  // Local directory
 	String repoId = "repo-defaults";      
@@ -299,8 +305,8 @@ public class ObligationStateManager {
 	tdb2Provider.loadFromTurtle(ttlPath,kbContextIRIString);
 	
 	// 3. Specify a time
-	String dateTime ="2010-01-10T10:44:00.000+02:00";
-
+	//String dateTime ="2010-01-10T10:44:00.000+02:00";
+	String dateTime = "2025-07-25T11:30:00.000+02:00";
 
    	KnowledgeBaseManager kbManager = new KnowledgeBaseManager(tdb2Provider,kbContextIRIString);
 		
@@ -359,6 +365,7 @@ public class ObligationStateManager {
    	System.out.println("Memory used: " + memoryUsedInKB + " KB");
    	
    	//report.printReport();
+   	report.printReport();
    	report.saveReport(reportFilePath);
    	
    	//tdb2Provider.close();

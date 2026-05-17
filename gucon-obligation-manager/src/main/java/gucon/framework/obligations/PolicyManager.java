@@ -80,6 +80,7 @@ public class PolicyManager {
 			   // List<String> prefixesList= extractPrefixes (model);
 			    //String prefixes = String.join("\n", prefixesList);
 				String constructQuery = namespaceDeclaration+ "\n CONSTRUCT {"+ template + "} where { " + WhereClause + "}";
+				//System.out.print("construct query" +constructQuery);
 			return constructQuery;
 	    }
 		   

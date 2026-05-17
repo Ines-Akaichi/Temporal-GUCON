@@ -66,7 +66,7 @@ public class TestHarness implements JenaSubsystemLifecycle  {
 		    Runtime runtime = Runtime.getRuntime();
 		    
 		 // GC to clean up before timing and measuring memory
-		    awaitFullGc(); 
+		    //awaitFullGc(); 
 		    
 		    
 		    long startMemory = runtime.totalMemory() - runtime.freeMemory();
@@ -93,7 +93,7 @@ public class TestHarness implements JenaSubsystemLifecycle  {
 
 		 // GC after workload (optional: for post-analysis)
 		    
-		    awaitFullGc();  // <- Ensure memory is cleaned up consistently
+		    //awaitFullGc();  // <- Ensure memory is cleaned up consistently
 		    
 		    long endTime = System.nanoTime();
 		    long endMemory = runtime.totalMemory() - runtime.freeMemory();

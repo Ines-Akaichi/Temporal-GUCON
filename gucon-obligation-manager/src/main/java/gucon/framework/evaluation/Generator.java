@@ -8,6 +8,7 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.AbstractMap;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -97,6 +98,7 @@ public class Generator {
     private Map<String, Set<Statement>> computeRuleMatches(List<Rule> rules) {
         if (!ruleToMatchesCache.isEmpty()) return ruleToMatchesCache;
         for (Rule rule : rules) {
+        	
             Query query = rule.getFullConditionQuery();
             Model result = executeConstructQuery(modelKB, query);
             Set<Statement> matches = result.listStatements().toSet();
@@ -105,6 +107,7 @@ public class Generator {
         return ruleToMatchesCache;
     }
 
+    
 
 
 	public Resource createRuleResource(String ruleID, String conditionPattern, String deonticOperator, String actionPattern) {
@@ -214,8 +217,25 @@ public class Generator {
 	
 	// <-------- generate rules -------------->
 	
+	private List<Integer> generateDeterministicCases(int totalRules) {
+	    List<Integer> cases = new ArrayList<>();
+
+	    int numCases = 4; // 0,1,2,3
+	    int perCase = totalRules / numCases;
+
+	    for (int c = 0; c < numCases; c++) {
+	        for (int i = 0; i < perCase; i++) {
+	            cases.add(c);
+	        }
+	    }
+
+	    // Optional: shuffle to avoid clustering of same-case rules
+	    Collections.shuffle(cases, new Random(42)); // fixed seed = deterministic
+
+	    return cases;
+	}
 	
-	List<Resource>  generateDataDrivenRules(List<String> actions,  OffsetDateTime t) {
+	List<Resource>  generateDataDrivenRules(OffsetDateTime t) {
 	    Random random = new Random();
 	    List<Statement> statements = inModel.listStatements().toList();
 	    List<Resource> orderedRules = new ArrayList<>();
@@ -243,11 +263,11 @@ public class Generator {
 	             PredicatePair pair = new PredicatePair(predicates.get(i), predicates.get(j));
 	             validPairsWithSubjects
 	                 .computeIfAbsent(pair, k -> new HashSet<>())
-	                 .add(subject);  // ✅ Add subject that supports both predicates
+	                 .add(subject);  //  Add subject that supports both predicates
 	         }
 	     }
 	 }
-	 // ✅ Step 4: Keep only pairs that have at least one subject supporting both predicates
+	 //  Step 4: Keep only pairs that have at least one subject supporting both predicates
 	 List<PredicatePair> predicatePairs = validPairsWithSubjects.entrySet().stream()
 			    .filter(entry -> !entry.getValue().isEmpty())
 			    .map(Map.Entry::getKey)
@@ -255,20 +275,22 @@ public class Generator {
 			    .collect(Collectors.toList());
 
 	 
-	/* System.out.println("Top 5 predicate pairs with fewest subject matches:");
+	 System.out.println("Top * predicate pairs with fewest subject matches:");
 	 predicatePairs.stream()
-	     .limit(12)
 	     .forEach(pair -> {
 	         int count = validPairsWithSubjects.get(pair).size();
 	         System.out.println(pair + " → " + count + " subjects");
 	     });
-   */
+   
 	 // Optional logging
 	 System.out.println("Total valid predicate pairs with shared subjects (i.e., potential rules): " + predicatePairs.size());
 
 
 	    int actualRuleCount =  predicatePairs.size();
-
+	    
+	    //assign temporal cases
+	    List<Integer> caseAssignments = generateDeterministicCases(actualRuleCount);
+	    
 	    int rulesCreated = 0;
 	    
 	    for (int i = 0; i < actualRuleCount; i++) {
@@ -289,20 +311,20 @@ public class Generator {
 	        ruleIDO += 1;
 
 	        String sVar = "?s"  + rulesCreated;
+	        
 	        String oVar1 = "?o1_" + rulesCreated;
 	        String oVar2 = "?o2_" + rulesCreated;
 
 	        String triplePattern1 = sVar + " <" + p1.getURI() + "> " + oVar1 + " .";
 	        String triplePattern2 = sVar + " <" + p2.getURI() + "> " + oVar2 + " .";
 
-	        String action = actions.get(random.nextInt(actions.size()));
+	        String action = Namespace.GUCON_URI + "action-" + (ruleIDO + "_" + random.nextInt(1000));	        
 	        String bracketedAction = "<" + action + ">";
 	        String actionTriple = String.format("<< %s %s %s >>", sVar, bracketedAction, oVar1);
 	        
 
-	        // Temporal case
-	        int caseIndex = random.nextInt(3); // Generates 0, 1, or 2 randomly
-	        //int caseIndex = 0;
+	        // Temporal cases
+	        int caseIndex = caseAssignments.get(i);
 	        OffsetDateTime startTime, deadline, executionTime = null;
 
 	        switch (caseIndex) {
@@ -318,7 +340,7 @@ public class Generator {
 	                startTime = t.minusHours(30);
 	                executionTime = startTime.plusHours(12);
 	                break;
-	            default:
+	            default: // active, fulfilled?
 	                startTime = t;
 	        }
 
@@ -405,19 +427,19 @@ public class Generator {
 	}
 
 
-	public  void generateRules(List<Integer> ruleScales,String outRuleDir, String outKbDir, OffsetDateTime t) throws Exception
+	public  void generateRules(String outRuleDir, String outKbDir, OffsetDateTime t) throws Exception
 	{
-		modelRules = ModelFactory.createDefaultModel();
-    	Namespace.registerAll(modelRules);
+		    modelRules = ModelFactory.createDefaultModel();
+         	Namespace.registerAll(modelRules);
 
-	        List<String> actions = Arrays.asList("gucon:approve", "gucon:access", "gucon:annotate", "gucon:delete", "gucon:log", "gucon:share");
+	        //List<String> actions = Arrays.asList("gucon:approve", "gucon:access", "gucon:annotate", "gucon:delete", "gucon:log", "gucon:share");
 	        ruleIDO = 0; // Reset rule counter
 	        // 🔹 Generate a unique policy ID (UUID or random string)
 	        String policyID = "policy-" + UUID.randomUUID(); // e.g., policy-3f8a3c2e-...
 	        policyName = policyID;
 
 	        // Step 1: Generate all rules
-	        generateDataDrivenRules(actions, t);
+	        generateDataDrivenRules(t);
        
 	        // write all rules
 	        String outFullRulefilename = outRuleDir + "rules-all.ttl";
@@ -427,6 +449,12 @@ public class Generator {
             }
             System.out.println(" all Rules written to: " + outFullRulefilename);
             
+
+        	writeIncreasedSlectivityRules(modelRules,outRuleDir);
+        	
+            System.out.println("Rules with increased selectivity are written to" + outRuleDir+"selectivity");
+
+            
 	        // Write KB
 	        String outKbFilePath = outKbDir + "kb-for-all-rule.ttl";
 	        try (FileWriter writer = new FileWriter(outKbFilePath)) {
@@ -435,14 +463,89 @@ public class Generator {
 	        }
 	        System.out.println("KB written to: " + outKbFilePath);
 	        
+	        
+	        // this needs to be outsourced ..
+	       /* 
 	       // Extract rules from  rules-all.ttl
 	        List<Rule> allRules = extractSparqlQueriesFromRules(outFullRulefilename);
 	        // Bucket them by selectivity
 	        Map<Selectivity, List<Rule>> buckets = bucketRules(allRules);
 	        // Generate files from the HIGH selectivity bucket, using scales from config
 	        createRuleFilesFromBucket(ruleScales, Selectivity.HIGH, buckets, modelRules, outRuleDir);	        
-	        
+	        */
 	}
+	
+	public void writeRulesPerBucket (List<Integer> ruleScales,String outRuleDir,String outRuleDirBucket, Selectivity bucketType) throws IOException
+	{
+        String outFullRulefilename = outRuleDir + "rules-all.ttl";
+        // Extract rules from  rules-all.ttl
+        List<Rule> allRules = extractSparqlQueriesFromRules(outFullRulefilename);
+        // Bucket them by selectivity
+        Map<Selectivity, List<Rule>> buckets = bucketRules(allRules);
+        // Generate files from the HIGH selectivity bucket, using scales from config
+        createRuleFilesFromBucket(ruleScales, bucketType, buckets, modelRules, outRuleDirBucket);	 
+	}
+	
+	
+	public void writeIncreasedSlectivityRules(Model modelRules,
+	        String outRuleDir
+			) throws IOException {
+
+			    // 1. Extract rules from model
+                String outFullRulefilename = outRuleDir + "rules-all.ttl";
+			    List<Rule> allRules = extractSparqlQueriesFromRules(outFullRulefilename);
+
+			    // 2. Compute matches per rule
+			    Map<String, Set<Statement>> matches = computeRuleMatches(allRules);
+
+			    // 3. Pair rules with selectivity (no helper class)
+			    List<Map.Entry<Rule, Integer>> rankedRules = new ArrayList<>();
+
+			    for (Rule r : allRules) {
+
+			        String ruleId = r.getRuleID(); // adjust if needed
+
+			        int count = matches.containsKey(ruleId)
+			                ? matches.get(ruleId).size()
+			                : 0;
+
+			        rankedRules.add(new AbstractMap.SimpleEntry<>(r, count));
+			    }
+
+			    // 4. Sort by increasing selectivity (low → high matches)
+			    rankedRules.sort(Comparator.comparingInt(Map.Entry::getValue));
+
+			    // 5. Write one file per rule in sorted order
+			    int index = 1;
+
+			    for (Map.Entry<Rule, Integer> entry : rankedRules) {
+
+			        Rule rule = entry.getKey();
+			        int matchCount = entry.getValue();
+
+			        // Create model for single rule
+			        Model subsetModel = ModelFactory.createDefaultModel();
+			        subsetModel.setNsPrefixes(modelRules.getNsPrefixMap());
+
+			        Resource ruleRes = modelRules.getResource(rule.getRuleID());
+
+			        if (ruleRes != null) {
+			            subsetModel.add(ruleRes.listProperties());
+			        }
+
+			        // Output file (ordered by selectivity)
+			        String outFile = outRuleDir+"selectivity/"
+			                + "rule_" + String.format("%04d", index)
+			                + "_matches_" + matchCount + ".ttl";
+
+			        try (FileWriter writer = new FileWriter(outFile)) {
+			            subsetModel.write(writer, "TURTLE");
+			        }
+
+			        index++;
+			    }
+	}
+	
 	
 	
 	  private Map<Selectivity, List<Rule>> bucketRules(List<Rule> rules) {
@@ -546,7 +649,7 @@ public class Generator {
 	) throws IOException {
 
 	    List<Statement> akbStatements = modelKB.listStatements().toList();
-	    List<Rule> ruleQueryList  = extractSparqlQueriesFromRules(rulesBaseDir + "/rules-all.ttl");
+	    //List<Rule> ruleQueryList  = extractSparqlQueriesFromRules(rulesBaseDir + "rules-all.ttl");
 	    
 	    // Step 2: Execute queries and collect matches per rule
 	    //Map<String, Set<Statement>> ruleToMatches = new HashMap<>();
@@ -580,15 +683,27 @@ public class Generator {
 	        // Compute per-rule quotas proportionally, with optional cap
 	        Map<String, Integer> ruleToStatementQuota = new HashMap<>();
 	        int maxCap = (int) (subsetSize * 0.4);  // Max 40% per rule
+	        
+
+	        // UPDATED QUOTA LOGIC
+	        double reductionFactor = 0.6; // tune this (0.3–0.7) 
 
 	        for (Map.Entry<String, Set<Statement>> entry : ruleToMatches.entrySet()) {
 	            String ruleID = entry.getKey();
 	            int matchCount = entry.getValue().size();
 
-	            int ruleQuota = (int) Math.round(((double) matchCount / totalMatchPoolSize) * subsetSize);
-	            ruleQuota = Math.min(ruleQuota, maxCap); // Enforce max cap
+	            int ruleQuota = (int) Math.round(
+	                    ((double) matchCount / totalMatchPoolSize) * subsetSize * reductionFactor
+	            );
+
+	            ruleQuota = Math.min(ruleQuota, maxCap);
+
+	            // avoid zero quota
+	            ruleQuota = Math.max(ruleQuota, 1);
+
 	            ruleToStatementQuota.put(ruleID, ruleQuota);
 	        }
+
 
 	        // Step 4: Select statements from each rule
 	        Model subsetModel = ModelFactory.createDefaultModel();
@@ -602,12 +717,13 @@ public class Generator {
 	            int quota = entry.getValue();
 
 	            List<Statement> candidates = new ArrayList<>(ruleToMatches.get(ruleID));
-	            //Collections.shuffle(candidates);
+	            Collections.shuffle(candidates);
 
 	            int added = 0;
 	            for (Statement stmt : candidates) {
 	                if (usedStatements.add(stmt)) { // Add only if not already used
-	                    subsetModel.add(stmt);
+	                   subsetModel.add(stmt);
+	                   // usedStatements.add(stmt); 
 	                    //if (ruleID.equals("http://example.com/ns#47"))
 	                    //{
 	                    	//System.out.println(stmt);	                    }
@@ -647,13 +763,17 @@ public class Generator {
 	
 		
 	public static void main(String[] args) throws Exception {
-	    if (args.length < 1) {
+	   /* if (args.length < 1) {
 	        System.err.println("Usage: java YourClassName <path-to-config.yaml>");
 	        System.exit(1);
 	    }
 
 	    // Load config from the file path provided in args[0]
-	    String configPath = args[0];
+	    String configPath = args[0];*/
+	   
+	   
+	   String configPath = "config-generator.yaml";
+
 	    Yaml yaml = new Yaml();
 	    Map<String, Object> config = yaml.load(new FileInputStream(configPath));
 	    
@@ -674,9 +794,19 @@ public class Generator {
         throw new IllegalArgumentException("Unsupported inputTime type: " + inputTime.getClass());
     }
     
-    List<Integer> ruleScales = (List<Integer>) config.get("ruleScale");	
-
-    generator.generateRules(ruleScales,outputRuleDirectory,outputKBDirectory,t);
+    generator.generateRules(outputRuleDirectory,outputKBDirectory,t);
+    
+    List<Integer> ruleScalesH = (List<Integer>) config.get("ruleScaleH");	
+    String outputRuleDirectoryH = (String) config.get("outputRuleDirectoryH");
+    generator.writeRulesPerBucket(ruleScalesH, outputRuleDirectory,outputRuleDirectoryH, Selectivity.HIGH);
+    
+    List<Integer> ruleScalesM = (List<Integer>) config.get("ruleScaleM");	
+    String outputRuleDirectoryM = (String) config.get("outputRuleDirectoryM");
+    generator.writeRulesPerBucket(ruleScalesM, outputRuleDirectory,outputRuleDirectoryM, Selectivity.MEDIUM);
+    
+    List<Integer> ruleScalesL = (List<Integer>) config.get("ruleScaleL");	
+    String outputRuleDirectoryL = (String) config.get("outputRuleDirectoryL");
+    generator.writeRulesPerBucket(ruleScalesL, outputRuleDirectory,outputRuleDirectoryL, Selectivity.LOW);
     
     List<Integer> kbScales = (List<Integer>) config.get("KBScale");	
     generator.createSubsets(kbScales,outputRuleDirectory,outputKBDirectory);

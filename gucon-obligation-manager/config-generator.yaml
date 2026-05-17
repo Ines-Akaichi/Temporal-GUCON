@@ -1,18 +1,33 @@
-inputDataDirectory: C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/emrDatabase/mapped/emrGraph-100.ttl
+inputDataDirectory: GUCON-Obl/emrDatabase/mapped/emrGraph-100.ttl
 inputTime: 2010-01-10T10:44:00.000+02:00
-outputRuleDirectory: C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/generatedData/rules/
-outputKBDirectory: C:/Users/Administrator/OneDrive - WU Wien/Desktop/GUCON-Obl/generatedData/kb/
-ruleScale: 
+outputRuleDirectory: GUCON-Obl/generatedData/rules/
+outputRuleDirectoryH: generatedData/rules/high/
+outputRuleDirectoryM: generatedData/rules/medium/
+outputRuleDirectoryL: generatedData/rules/low/
+outputKBDirectory: GUCON-Obl/generatedData/kb/
+ruleScaleH: 
+ - 5
+ - 9
+ - 13
+ - 17
+ - 21
+ruleScaleM: 
+- 6
+- 8
+- 10
+- 12
+- 14
+ruleScaleL: 
  - 5
  - 9
  - 13
  - 17
  - 21
 KBScale: 
- - 100000
- - 208000
- - 406000
- - 604000
- - 802000
- - 1000000
+ - 500000
+ - 909068
+ - 1318136
+ - 1727204
+ - 2136272
+ - 2545342
 

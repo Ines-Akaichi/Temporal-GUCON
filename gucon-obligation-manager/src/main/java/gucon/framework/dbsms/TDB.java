@@ -45,6 +45,20 @@ public class TDB {
         }
     }
 	
+    public static void queryTDB(String tdbDir, String sparql) {
+        Dataset dataset = TDB2Factory.connectDataset(tdbDir);
+
+        dataset.begin(ReadWrite.READ);
+        try {
+            //String sparql = "SELECT ?s ?p ?o WHERE { ?s ?p ?o } LIMIT 10";
+            try (QueryExecution qExec = QueryExecutionFactory.create(sparql, dataset)) {
+                ResultSet results = qExec.execSelect();
+                ResultSetFormatter.out(System.out, results);
+            }
+        } finally {
+            dataset.end();
+        }
+    }
 	 public static void main(String[] args) {
 		 
 		   // Path to the TDB2 directory (created if it doesn't exist)
